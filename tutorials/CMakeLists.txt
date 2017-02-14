@@ -33,7 +33,7 @@ add_subdirectory(far)
 
 add_subdirectory(osd)
 
-add_custom_target(tutorials
+add_custom_target(all_tutorials
     DEPENDS
         hbr_tutorials
         far_tutorials
