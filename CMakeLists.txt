@@ -290,6 +290,7 @@ set(CMAKE_SUPPRESS_REGENERATION TRUE)
 option(PTEX_LOCATION "Path to Ptex" "")
 option(GLEW_LOCATION "Path to GLEW" "")
 option(GLFW_LOCATION "Path to GLFW" "")
+option(USE_GLLOADGEN "Use GLLoadgen instead of GLEW" OFF)
 
 option(NO_LIB "Disable the opensubdiv libs build (caveat emptor)" OFF)
 option(NO_EXAMPLES "Disable examples build" OFF)
@@ -346,10 +347,12 @@ if (OPENGL_FOUND AND NOT IOS)
     add_definitions(
         -DOPENSUBDIV_HAS_OPENGL
     )
-    if (APPLE)
-        find_package(GLEW)
-    else()
-        find_package(GLEW REQUIRED)
+	if(NOT USE_GLLOADGEN)
+        if (APPLE)
+            find_package(GLEW)
+        else()
+            find_package(GLEW REQUIRED)
+        endif()
     endif()
 endif()
 
@@ -408,13 +411,15 @@ if(GLFW_FOUND AND (GLFW_VERSION VERSION_EQUAL 3.0 OR GLFW_VERSION VERSION_GREATE
     add_definitions( -DGLFW_VERSION_3 )
 endif()
 
-# note: perhaps rename this to be more consistent, e.g. OPENSUBDIV_USES_GLEW
-if(GLEW_FOUND)
+if(USE_GLLOADGEN)
+    add_definitions( -DOPENSUBDIV_USES_GLLOADGEN )
+elseif(GLEW_FOUND)
+    # note: perhaps rename this to be more consistent, e.g. OPENSUBDIV_USES_GLEW
     add_definitions( -DOSD_USES_GLEW )
 endif()
 
 # note : (GLSL transform feedback kernels require GL 4.2)
-if(GLEW_FOUND AND OPENGL_4_2_FOUND)
+if((GLEW_FOUND AND OPENGL_4_2_FOUND) OR USE_GLLOADGEN)
     add_definitions(
         -DOPENSUBDIV_HAS_GLSL_TRANSFORM_FEEDBACK
     )
@@ -429,7 +434,7 @@ else()
 endif()
 
 # note : (GLSL compute shader kernels require GL 4.3)
-if(GLEW_FOUND AND OPENGL_4_3_FOUND)
+if((GLEW_FOUND AND OPENGL_4_3_FOUND) OR USE_GLLOADGEN)
     add_definitions(
         -DOPENSUBDIV_HAS_GLSL_COMPUTE
     )

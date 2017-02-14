@@ -25,7 +25,9 @@
 #ifndef OPENSUBDIV3_OSD_OPENGL_H
 #define OPENSUBDIV3_OSD_OPENGL_H
 
-#if defined(__APPLE__)
+#if defined(OPENSUBDIV_USES_GLLOADGEN)
+    #include <osd/gl_osd_core.h>
+#elif defined(__APPLE__)
     #include "TargetConditionals.h"
     #if TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR
         #include <OpenGLES/ES2/gl.h>

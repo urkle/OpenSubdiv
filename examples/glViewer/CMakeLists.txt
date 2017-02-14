@@ -40,7 +40,7 @@ list(APPEND PLATFORM_LIBRARIES
     "${GLFW_LIBRARIES}"
 )
 
-if ( GLEW_FOUND )
+if ( GLEW_FOUND AND NOT USE_GLLOADGEN  )
     include_directories("${GLEW_INCLUDE_DIR}")
     list(APPEND PLATFORM_LIBRARIES "${GLEW_LIBRARY}")
 endif()

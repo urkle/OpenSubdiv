@@ -25,7 +25,7 @@
 add_subdirectory(common)
 
 if (NOT NO_OPENGL)
-    if (OPENGL_FOUND AND (GLEW_FOUND AND GLFW_FOUND) OR (APPLE AND GLFW_FOUND))
+    if (OPENGL_FOUND AND (GLEW_FOUND OR APPLE OR USE_GLLOADGEN) AND GLFW_FOUND)
 
         add_subdirectory(glViewer)
         add_subdirectory(glEvalLimit)

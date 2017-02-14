@@ -57,6 +57,7 @@ std::string GetShaderVersion();
 
 std::string GetShaderVersionInclude();
 
+bool GL_TransformFeedback();
 
 bool GL_ARBSeparateShaderObjects();
 

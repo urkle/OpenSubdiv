@@ -253,7 +253,7 @@ createOsdMesh(std::string const &kernel,
                                  level, bits);
 #endif
 #ifdef OPENSUBDIV_HAS_GLSL_TRANSFORM_FEEDBACK
-    } else if(kernel == "XFB") {
+    } else if(kernel == "XFB" && GLUtils::GL_TransformFeedback()) {
         return new Osd::Mesh<Osd::GLVertexBuffer,
                              Osd::GLStencilTableTBO,
                              Osd::GLXFBEvaluator,
@@ -264,7 +264,7 @@ createOsdMesh(std::string const &kernel,
                                  level, bits);
 #endif
 #ifdef OPENSUBDIV_HAS_GLSL_COMPUTE
-    } else if(kernel == "GLSL") {
+    } else if(kernel == "GLSL" && GLUtils::GL_ARBComputeShader()) {
         return new Osd::Mesh<Osd::GLVertexBuffer,
                              Osd::GLStencilTableSSBO,
                              Osd::GLComputeEvaluator,
@@ -540,10 +540,14 @@ int main(int argc, char ** argv) {
     }
 
     glfwMakeContextCurrent(window);
-    GLUtils::PrintGLVersion();
 
-#if defined(OSD_USES_GLEW)
-    // this is the only way to initialize glew correctly under core profile context.
+#if defined(OPENSUBDIV_USES_GLLOADGEN)
+	if (OpenSubdiv_ogl_LoadFunctions() == OpenSubdiv_ogl_LOAD_FAILED) {
+		printf("Failed to initialize gl layer\n");
+		exit(1);
+	}
+#elif defined(OSD_USES_GLEW)
+	// this is the only way to initialize glew correctly under core profile context.
     glewExperimental = true;
     if (GLenum r = glewInit() != GLEW_OK) {
         std::cout << "Failed to initialize glew. Error = "
@@ -553,6 +557,7 @@ int main(int argc, char ** argv) {
     // clear GL errors generated during glewInit()
     glGetError();
 #endif
+	GLUtils::PrintGLVersion();
 
     initShapes();
 

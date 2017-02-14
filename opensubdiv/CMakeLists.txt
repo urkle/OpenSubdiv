@@ -70,7 +70,7 @@ if (NOT NO_LIB)
         if (NOT "${OPENGL_INCLUDE_DIR}" STREQUAL "")
             include_directories("${OPENGL_INCLUDE_DIR}")
         endif()
-        if (GLEW_FOUND)
+        if (GLEW_FOUND AND NOT GLLOADGEN)
             include_directories("${GLEW_INCLUDE_DIR}")
         endif()
         list(APPEND PLATFORM_GPU_LIBRARIES
@@ -83,7 +83,7 @@ if (NOT NO_LIB)
         )
     endif()
 
-    if( OPENGL_4_2_FOUND OR OPENGL_4_3_FOUND)
+    if( (OPENGL_4_2_FOUND OR OPENGL_4_3_FOUND) AND GLEW_FOUND AND NOT USE_GLLOADGEN )
         list(APPEND PLATFORM_GPU_LIBRARIES
             ${GLEW_LIBRARY}
         )

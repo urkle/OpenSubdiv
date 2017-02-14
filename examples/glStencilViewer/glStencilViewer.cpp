@@ -1002,7 +1002,9 @@ initHUD() {
     }
 #endif
 #ifdef OPENSUBDIV_HAS_GLSL_TRANSFORM_FEEDBACK
-    g_hud.AddPullDownButton(compute_pulldown, "GL XFB", kGLXFB);
+	if (GLUtils::GL_TransformFeedback()) {
+		g_hud.AddPullDownButton(compute_pulldown, "GL XFB", kGLXFB);
+	}
 #endif
 #ifdef OPENSUBDIV_HAS_GLSL_COMPUTE
     if (GLUtils::GL_ARBComputeShader()) {
@@ -1109,7 +1111,6 @@ int main(int argc, char **argv) {
         return 1;
     }
     glfwMakeContextCurrent(g_window);
-    GLUtils::PrintGLVersion();
 
     // accommodate high DPI displays (e.g. mac retina displays)
     glfwGetFramebufferSize(g_window, &g_width, &g_height);
@@ -1120,7 +1121,12 @@ int main(int argc, char **argv) {
     glfwSetMouseButtonCallback(g_window, mouse);
     glfwSetWindowCloseCallback(g_window, windowClose);
 
-#if defined(OSD_USES_GLEW)
+#if defined(OPENSUBDIV_USES_GLLOADGEN)
+	if (OpenSubdiv_ogl_LoadFunctions() == OpenSubdiv_ogl_LOAD_FAILED) {
+		printf("Failed to initialize gl layer\n");
+		exit(1);
+	}
+#elif defined(OSD_USES_GLEW)
 #ifdef CORE_PROFILE
     // this is the only way to initialize glew correctly under core profile context.
     glewExperimental = true;
@@ -1134,6 +1140,7 @@ int main(int argc, char **argv) {
     glGetError();
 #endif
 #endif
+	GLUtils::PrintGLVersion();
 
     initGL();
     linkDefaultPrograms();

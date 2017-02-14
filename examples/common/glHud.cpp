@@ -35,7 +35,7 @@
 #include <iostream>
 
 static const char *s_VS =
-#if defined(GL_VERSION_3_1)
+#if defined(GL_VERSION_3_1) || defined(OPENSUBDIV_USES_GLLOADGEN)
     "#version 150\n"
     "in vec2 position;\n"
     "in vec3 color;\n"
@@ -65,7 +65,7 @@ static const char *s_VS =
 #endif
 
 static const char *s_FS =
-#if defined(GL_VERSION_3_1)
+#if defined(GL_VERSION_3_1) || defined(OPENSUBDIV_USES_GLLOADGEN)
     "#version 150\n"
     "in vec4 fragColor;\n"
     "in vec2 fragUV;\n"
@@ -89,7 +89,7 @@ static const char *s_FS =
 #endif
 
 static const char *s_BG_VS =
-#if defined(GL_VERSION_3_1)
+#if defined(GL_VERSION_3_1) || defined(OPENSUBDIV_USES_GLLOADGEN)
     "#version 150\n"
     "out vec2 uv;\n"
     "void main() {\n"
@@ -109,7 +109,7 @@ static const char *s_BG_VS =
 #endif
 
 static const char *s_BG_FS =
-#if defined(GL_VERSION_3_1)
+#if defined(GL_VERSION_3_1) || defined(OPENSUBDIV_USES_GLLOADGEN)
     "#version 150\n"
     "in vec2 uv;\n"
     "out vec4 color;\n"

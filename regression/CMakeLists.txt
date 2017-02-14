@@ -32,7 +32,7 @@ if (NOT NO_REGRESSION)
 
     add_subdirectory(far_perf)
 
-    if(OPENGL_FOUND AND (GLEW_FOUND OR APPLE) AND GLFW_FOUND)
+    if(OPENGL_FOUND AND (GLEW_FOUND OR APPLE OR USE_GLLOADGEN) AND GLFW_FOUND)
         add_subdirectory(osd_regression)
     else()
         set(MISSING "")

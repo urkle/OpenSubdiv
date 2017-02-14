@@ -136,6 +136,13 @@ if( OPENGL_FOUND OR OPENGLES_FOUND )
     endif()
 endif()
 
+if( USE_GLLOADGEN )
+	list(APPEND GPU_SOURCE_FILES
+		gl_osd_core.c
+	)
+	list(APPEND PUBLIC_HEADER_FILES gl_osd_core.h)
+endif()
+
 list(APPEND DOXY_HEADER_FILES ${GL_PUBLIC_HEADERS})
 
 #-------------------------------------------------------------------------------
@@ -145,7 +152,7 @@ set(GL_4_2_PUBLIC_HEADERS
     glXFBEvaluator.h
 )
 
-if( OPENGL_4_2_FOUND )
+if( OPENGL_4_2_FOUND OR USE_GLLOADGEN )
     list(APPEND GPU_SOURCE_FILES
         glXFBEvaluator.cpp
     )
@@ -153,9 +160,11 @@ if( OPENGL_4_2_FOUND )
     list(APPEND KERNEL_FILES
         glslXFBKernel.glsl
     )
-    list(APPEND PLATFORM_GPU_LIBRARIES
-        ${GLEW_LIBRARY}
-    )
+	if(GLEW_FOUND AND NOT USE_GLLOADGEN)
+        list(APPEND PLATFORM_GPU_LIBRARIES
+            ${GLEW_LIBRARY}
+        )
+    endif()
 endif()
 
 list(APPEND DOXY_HEADER_FILES ${GL_4_2_PUBLIC_HEADERS})
@@ -168,7 +177,7 @@ set(GL_4_3_PUBLIC_HEADERS
     glComputeEvaluator.h
 )
 
-if( OPENGL_4_3_FOUND )
+if( OPENGL_4_3_FOUND OR USE_GLLOADGEN )
     list(APPEND GPU_SOURCE_FILES
         glComputeEvaluator.cpp
     )
@@ -176,9 +185,11 @@ if( OPENGL_4_3_FOUND )
     list(APPEND KERNEL_FILES
         glslComputeKernel.glsl
     )
-    list(APPEND PLATFORM_GPU_LIBRARIES
-        ${GLEW_LIBRARY}
-    )
+    if(GLEW_FOUND AND NOT USE_GLLOADGEN)
+        list(APPEND PLATFORM_GPU_LIBRARIES
+            ${GLEW_LIBRARY}
+        )
+    endif()
 endif()
 
 list(APPEND DOXY_HEADER_FILES ${GL_4_3_PUBLIC_HEADERS})

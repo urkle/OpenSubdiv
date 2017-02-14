@@ -675,7 +675,7 @@ display() {
     int numDrawCalls = 0;
     // primitive counting
     glBeginQuery(GL_PRIMITIVES_GENERATED, g_queries[0]);
-#if defined(GL_VERSION_3_3)
+#if defined(GL_VERSION_3_3) || defined(OPENSUBDIV_USES_GLLOADGEN)
     glBeginQuery(GL_TIME_ELAPSED, g_queries[1]);
 #endif
 
@@ -727,7 +727,7 @@ display() {
     }
 
     glEndQuery(GL_PRIMITIVES_GENERATED);
-#if defined(GL_VERSION_3_3)
+#if defined(GL_VERSION_3_3) || defined(OPENSUBDIV_USES_GLLOADGEN)
     glEndQuery(GL_TIME_ELAPSED);
 #endif
 
@@ -741,7 +741,7 @@ display() {
     GLuint numPrimsGenerated = 0;
     GLuint timeElapsed = 0;
     glGetQueryObjectuiv(g_queries[0], GL_QUERY_RESULT, &numPrimsGenerated);
-#if defined(GL_VERSION_3_3)
+#if defined(GL_VERSION_3_3) || defined(OPENSUBDIV_USES_GLLOADGEN)
     glGetQueryObjectuiv(g_queries[1], GL_QUERY_RESULT, &timeElapsed);
 #endif
     float drawGpuTime = timeElapsed / 1000.0f / 1000.0f;
@@ -1085,11 +1085,13 @@ initHUD() {
     }
 #endif
 #ifdef OPENSUBDIV_HAS_GLSL_TRANSFORM_FEEDBACK
-    g_hud.AddPullDownButton(compute_pulldown, "GLSL TransformFeedback", kGLSL);
+	if (GLUtils::GL_TransformFeedback()) {
+		g_hud.AddPullDownButton(compute_pulldown, "GLSL TransformFeedback", kGLSL);
+	}
 #endif
 #ifdef OPENSUBDIV_HAS_GLSL_COMPUTE
     // Must also check at run time for OpenGL 4.3
-    if (GLEW_VERSION_4_3) {
+    if (GLUtils::GL_ARBComputeShader()) {
         g_hud.AddPullDownButton(compute_pulldown, "GLSL Compute", kGLSLCompute);
     }
 #endif
@@ -1191,7 +1193,6 @@ int main(int argc, char ** argv) {
     }
 
     glfwMakeContextCurrent(g_window);
-    GLUtils::PrintGLVersion();
 
     // accommodate high DPI displays (e.g. mac retina displays)
     glfwGetFramebufferSize(g_window, &g_width, &g_height);
@@ -1202,7 +1203,12 @@ int main(int argc, char ** argv) {
     glfwSetMouseButtonCallback(g_window, mouse);
     glfwSetWindowCloseCallback(g_window, windowClose);
 
-#if defined(OSD_USES_GLEW)
+#if defined(OPENSUBDIV_USES_GLLOADGEN)
+	if (OpenSubdiv_ogl_LoadFunctions() == OpenSubdiv_ogl_LOAD_FAILED) {
+		printf("Failed to initialize gl layer\n");
+		exit(1);
+	}
+#elif defined(OSD_USES_GLEW)
 #ifdef CORE_PROFILE
     // this is the only way to initialize glew correctly under core profile context.
     glewExperimental = true;
@@ -1216,6 +1222,7 @@ int main(int argc, char ** argv) {
     glGetError();
 #endif
 #endif
+	GLUtils::PrintGLVersion();
 
     // activate feature adaptive tessellation if OSD supports it
     g_options.adaptive = true;

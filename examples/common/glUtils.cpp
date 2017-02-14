@@ -204,7 +204,9 @@ WriteScreenshot(int width, int height) {
 
 bool
 SupportsAdaptiveTessellation() {
-#ifdef OSD_USES_GLEW
+#if defined(OPENSUBDIV_USES_GLLOADGEN)
+	return OpenSubdiv_ogl_ext_ARB_tessellation_shader > 0;
+#elif defined(OSD_USES_GLEW)
     return IS_SUPPORTED("GL_ARB_tessellation_shader");
 #else
 #if defined(GL_ARB_tessellation_shader) || defined(GL_VERSION_4_0)
@@ -266,8 +268,24 @@ std::string GetShaderVersionInclude(){
     return "#version " + GetShaderVersion() + "\n";
 }
 
-#if defined(OSD_USES_GLEW)
+bool GL_TransformFeedback() {
+#if defined(OPENSUBDIV_USES_GLLOADGEN)
+	return OpenSubdiv_ogl_GetMajorVersion() >= 4 && OpenSubdiv_ogl_GetMinorVersion() >= 2;
+#elif defined(OSD_USES_GLEW)
+	return false;
+#else
+#if defined(GL_VERSION_4_2)
+	return true;
+#else
+	return false;
+#endif
+#endif
+}
+
 bool GL_ARBSeparateShaderObjects(){
+#if defined(OPENSUBDIV_USES_GLLOADGEN)
+	return OpenSubdiv_ogl_ext_ARB_separate_shader_objects > 0;
+#elif defined(OSD_USES_GLEW)
     return IS_SUPPORTED("GL_ARB_separate_shader_objects") ||
             (GLEW_VERSION_4_1 && IS_SUPPORTED("GL_ARB_tessellation_shader"));
 #else
@@ -280,8 +298,10 @@ bool GL_ARBSeparateShaderObjects(){
 }
 
 bool GL_ARBComputeShader() {
-#if defined(OSD_USES_GLEW)
-    return IS_SUPPORTED("GL_ARB_compute_shader") ||
+#if defined(OPENSUBDIV_USES_GLLOADGEN)
+	return OpenSubdiv_ogl_ext_ARB_compute_shader > 0;
+#elif defined(OSD_USES_GLEW)
+	return IS_SUPPORTED("GL_ARB_compute_shader") ||
            (GLEW_VERSION_4_3);
 #else
 #if defined(GL_ARB_compute_shader) || defined(GL_VERSION_4_3)

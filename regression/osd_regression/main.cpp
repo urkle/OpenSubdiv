@@ -632,8 +632,13 @@ main(int argc, char ** argv) {
     }
     glfwMakeContextCurrent(g_window);
     
-#if defined(OSD_USES_GLEW)
-    if (GLenum r = glewInit() != GLEW_OK) {
+#if defined(OPENSUBDIV_USES_GLLOADGEN)
+	if (OpenSubdiv_ogl_LoadFunctions() == OpenSubdiv_ogl_LOAD_FAILED) {
+		printf("Failed to initialize gl layer\n");
+		exit(1);
+	}
+#elif defined(OSD_USES_GLEW)
+	if (GLenum r = glewInit() != GLEW_OK) {
         printf("Failed to initialize glew. error = %d\n", r);
         exit(1);
     }

@@ -850,7 +850,7 @@ display() {
     // primitive counting
 
     glBeginQuery(GL_PRIMITIVES_GENERATED, g_queries[0]);
-#if defined(GL_VERSION_3_3)
+#if defined(GL_VERSION_3_3) || defined(OPENSUBDIV_USES_GLLOADGEN)
     glBeginQuery(GL_TIME_ELAPSED, g_queries[1]);
 #endif
 
@@ -927,14 +927,14 @@ display() {
     // -----------------------------------------------------
 
     glEndQuery(GL_PRIMITIVES_GENERATED);
-#if defined(GL_VERSION_3_3)
+#if defined(GL_VERSION_3_3) || defined(OPENSUBDIV_USES_GLLOADGEN)
     glEndQuery(GL_TIME_ELAPSED);
 #endif
 
     GLuint numPrimsGenerated = 0;
     GLuint timeElapsed = 0;
     glGetQueryObjectuiv(g_queries[0], GL_QUERY_RESULT, &numPrimsGenerated);
-#if defined(GL_VERSION_3_3)
+#if defined(GL_VERSION_3_3) || defined(OPENSUBDIV_USES_GLLOADGEN)
     glGetQueryObjectuiv(g_queries[1], GL_QUERY_RESULT, &timeElapsed);
 #endif
 
@@ -1382,9 +1382,12 @@ int main(int argc, char ** argv)
     glfwSetMouseButtonCallback(g_window, mouse);
     glfwSetWindowCloseCallback(g_window, windowClose);
 
-    GLUtils::PrintGLVersion();
-
-#if defined(OSD_USES_GLEW)
+#if defined(OPENSUBDIV_USES_GLLOADGEN)
+	if (OpenSubdiv_ogl_LoadFunctions() == OpenSubdiv_ogl_LOAD_FAILED) {
+		printf("Failed to initialize gl layer\n");
+		exit(1);
+	}
+#elif defined(OSD_USES_GLEW)
 #ifdef CORE_PROFILE
     // this is the only way to initialize glew correctly under core profile context.
     glewExperimental = true;
@@ -1398,6 +1401,7 @@ int main(int argc, char ** argv)
     glGetError();
 #endif
 #endif
+	GLUtils::PrintGLVersion();
 
     initGL();
 
