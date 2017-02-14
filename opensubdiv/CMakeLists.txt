@@ -145,6 +145,7 @@ if (NOT NO_LIB)
     set_target_properties(osd_static_cpu 
         PROPERTIES 
             OUTPUT_NAME osdCPU 
+            DEBUG_POSTFIX d
             CLEAN_DIRECT_OUTPUT 1
             FOLDER "opensubdiv"
     )
@@ -164,7 +165,12 @@ if (NOT NO_LIB)
                 $<TARGET_OBJECTS:osd_gpu_obj>
                 ${CUDA_KERNEL_FILES}
         )
-        set_target_properties(osd_static_gpu PROPERTIES OUTPUT_NAME osdGPU CLEAN_DIRECT_OUTPUT 1)
+        set_target_properties(osd_static_gpu
+            PROPERTIES
+                OUTPUT_NAME osdGPU
+                DEBUG_POSTFIX d
+                CLEAN_DIRECT_OUTPUT 1
+        )
 
         target_link_libraries(osd_static_gpu
             ${PLATFORM_CPU_LIBRARIES} ${PLATFORM_GPU_LIBRARIES}
@@ -193,8 +199,11 @@ if (NOT NO_LIB)
             set_target_properties(osd_dynamic_cpu
                 PROPERTIES
                     OUTPUT_NAME osdCPU
+                    DEBUG_POSTFIX d
                     CLEAN_DIRECT_OUTPUT 1
                     SOVERSION ${OSD_SONAME}
+                    MACOSX_RPATH ON
+                    FOLDER "opensubdiv"
                 )
         else()
             set_target_properties(osd_dynamic_cpu
@@ -223,8 +232,10 @@ if (NOT NO_LIB)
                 set_target_properties(osd_dynamic_gpu
                     PROPERTIES
                         OUTPUT_NAME osdGPU
+                        DEBUG_POSTFIX d
                         CLEAN_DIRECT_OUTPUT 1
                         SOVERSION ${OSD_SONAME}
+                        MACOSX_RPATH ON
                     )
             else()
                 set_target_properties(osd_dynamic_gpu
