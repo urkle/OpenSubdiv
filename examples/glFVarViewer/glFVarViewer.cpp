@@ -226,7 +226,7 @@ struct FVarData
         glBindTexture(GL_TEXTURE_BUFFER, textureBuffer);
         glTexBuffer(GL_TEXTURE_BUFFER, GL_R32F, buffer);
         glBindTexture(GL_TEXTURE_BUFFER, 0);
-        glBindTexture(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
 
         glDeleteBuffers(1, &buffer);
 
@@ -241,7 +241,7 @@ struct FVarData
         glBindTexture(GL_TEXTURE_BUFFER, textureParamBuffer);
         glTexBuffer(GL_TEXTURE_BUFFER, GL_RG32I, buffer);
         glBindTexture(GL_TEXTURE_BUFFER, 0);
-        glBindTexture(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
 
         glDeleteBuffers(1, &buffer);
     }
