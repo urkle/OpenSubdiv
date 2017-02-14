@@ -266,8 +266,8 @@ std::string GetShaderVersionInclude(){
     return "#version " + GetShaderVersion() + "\n";
 }
 
-bool GL_ARBSeparateShaderObjectsOrGL_VERSION_4_1(){
 #if defined(OSD_USES_GLEW)
+bool GL_ARBSeparateShaderObjects(){
     return IS_SUPPORTED("GL_ARB_separate_shader_objects") ||
             (GLEW_VERSION_4_1 && IS_SUPPORTED("GL_ARB_tessellation_shader"));
 #else
@@ -279,7 +279,7 @@ bool GL_ARBSeparateShaderObjectsOrGL_VERSION_4_1(){
 #endif
 }
 
-bool GL_ARBComputeShaderOrGL_VERSION_4_3() {
+bool GL_ARBComputeShader() {
 #if defined(OSD_USES_GLEW)
     return IS_SUPPORTED("GL_ARB_compute_shader") ||
            (GLEW_VERSION_4_3);

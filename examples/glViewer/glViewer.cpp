@@ -1542,7 +1542,7 @@ initHUD() {
     g_hud.AddPullDownButton(compute_pulldown, "GLSL TransformFeedback", kGLSL);
 #endif
 #ifdef OPENSUBDIV_HAS_GLSL_COMPUTE
-    if (GLUtils::GL_ARBComputeShaderOrGL_VERSION_4_3()) {
+    if (GLUtils::GL_ARBComputeShader()) {
         g_hud.AddPullDownButton(compute_pulldown, "GLSL Compute", kGLSLCompute);
     }
 #endif
